@@ -3,10 +3,10 @@ import { z } from 'zod';
 export const taskSchema = z.object({
   id: z.number(),
   title: z.string(),
-  description: z.string().optional(),
-  dueDate: z.date().optional(),
-  duration: z.number().optional(),
+  description: z.string().nullable(),
+  dueDate: z.string().nullable(), // Match the API schema (string format)
+  duration: z.number().nullable(),
   status: z.enum(['pending', 'in_progress', 'completed']),
-  createdAt: z.date(),
-  updatedAt: z.date(),
+  createdAt: z.string().transform((val) => new Date(val)),
+  updatedAt: z.string().transform((val) => new Date(val)),
 });
