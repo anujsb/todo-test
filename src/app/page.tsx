@@ -19,30 +19,30 @@
 //   );
 // }
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import TaskForm from '@/components/TaskForm';
-import TaskTextInput from '@/components/TaskTextInput';
-import TaskList from '@/components/TaskList';
-import TaskCalendar from '@/components/TaskCalendar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState } from "react";
+import TaskForm from "@/components/TaskForm";
+import TaskTextInput from "@/components/TaskTextInput";
+import TaskList from "@/components/TaskList";
+import TaskCalendar from "@/components/TaskCalendar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('list');
+  const [activeTab, setActiveTab] = useState("list");
 
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Todo App</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <div>
-          <h2 className="text-lg font-semibold mb-2">Manual Entry</h2>
-          <TaskForm />
-        </div>
+      <div className="flex flex-col gap-4 mb-4">
         <div>
           <h2 className="text-lg font-semibold mb-2">AI-Powered Entry</h2>
           <TaskTextInput />
         </div>
+        {/* <div>
+          <h2 className="text-lg font-semibold mb-2">Manual Entry</h2>
+          <TaskForm />
+        </div> */}
       </div>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>

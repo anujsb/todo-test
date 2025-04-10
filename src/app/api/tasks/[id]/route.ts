@@ -13,16 +13,15 @@ const updateTaskSchema = z.object({
 });
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const taskId = parseInt(params.id);
+  const taskId = parseInt(params.id, 10); // Ensure the ID is parsed as a number
   const tasks = await db.select().from(task).where(eq(task.id, taskId)).limit(1);
   if (tasks.length === 0) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
   return NextResponse.json(tasks[0]);
 }
 
-export async function PUT(request: Request, context: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const { id } = context.params; // Access params correctly
-    const taskId = parseInt(id, 10); // Convert id to a number
+    const taskId = parseInt(params.id, 10); 
     if (isNaN(taskId)) {
       return NextResponse.json({ error: 'Invalid task ID' }, { status: 400 });
     }
@@ -51,8 +50,9 @@ export async function PUT(request: Request, context: { params: { id: string } })
 }
 
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const taskId = parseInt(params.id);
+  const taskId = parseInt(params.id, 10); // Ensure the ID is parsed as a number
   const deletedTask = await db.delete(task).where(eq(task.id, taskId)).returning();
   if (deletedTask.length === 0) return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+  return NextResponse.json({ message: 'Task deleted' });
   return NextResponse.json({ message: 'Task deleted' });
 }
