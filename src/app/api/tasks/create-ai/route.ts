@@ -34,11 +34,19 @@ export async function POST(request: Request) {
     const prompt = `
       Given the user input: "${text}"
       And the existing tasks in the database: ${JSON.stringify(context, null, 2)}
+      Analyze the current situation and prioritize the task assignment based on the following factors:
+      - Priority: If the task is marked as high priority, it should be scheduled as soon as possible.
+      - Availability: Consider the availability of time slots based on the due dates and durations of existing tasks.
+      - Context: Ensure the task does not overlap with existing tasks and fits logically into the schedule.
+      - Duration: Estimate the duration of the task based on its complexity. If not specified, default to 60 minutes, but adjust based on the task's nature and priority.
+      - Due Date: If the user specifies a relative date like "tomorrow" or "next week", calculate the exact date based on today's date (${new Date().toISOString().split('T')[0]}). If no date is specified, suggest the nearest available date based on the database context or default to tomorrow.
+      - Location: If the task requires a specific location or resource, ensure it is assigned accordingly.
+
       Extract the following task attributes:
       - title: A short title for the task.
       - description: A detailed description of the task (optional, default to "No description provided" if not specified).
-      - dueDate: The due date in ISO 8601 format (optional). If the user specifies a relative date like "tomorrow" or "next week", calculate the exact date based on today's date (${new Date().toISOString().split('T')[0]}). If no date is specified, suggest the nearest available date based on the database context or default to tomorrow.
-      - duration: The estimated duration of the task in minutes (optional, default to 60 minutes if not specified).
+      - dueDate: The due date in ISO 8601 format (optional). If no date is specified, infer the most logical date based on priority and availability.
+      - duration: The estimated duration of the task in minutes (optional, default to 60 minutes if not specified, but adjust based on priority and complexity).
       - status: The status of the task, which can be one of the following: "pending", "in_progress", or "completed" (default to "pending" if not specified).
 
       Return the result as a valid JSON object with the following structure:

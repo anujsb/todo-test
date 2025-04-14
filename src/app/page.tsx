@@ -29,7 +29,7 @@ import TaskCalendar from "@/components/TaskCalendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("list");
+  const [activeTab, setActiveTab] = useState("calendar");
 
   return (
     <main className="container mx-auto p-4">

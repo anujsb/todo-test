@@ -21,9 +21,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
-    const taskId = parseInt(params.id, 10); 
+    const taskId = parseInt(params.id, 10);
     if (isNaN(taskId)) {
-      return NextResponse.json({ error: 'Invalid task ID' }, { status: 400 });
+      return NextResponse.json({ error: "Invalid task ID" }, { status: 400 });
     }
 
     const body = await request.json();
@@ -36,14 +36,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       .returning();
 
     if (updatedTask.length === 0) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+      return NextResponse.json({ error: "Task not found" }, { status: 404 });
     }
 
     return NextResponse.json(updatedTask[0]);
   } catch (error) {
-    console.error('Error updating task:', error);
+    console.error("Error updating task:", error);
     return NextResponse.json(
-      { error: 'Invalid data', details: error instanceof Error ? error.message : String(error) },
+      { error: "Invalid data", details: error instanceof Error ? error.message : String(error) },
       { status: 400 }
     );
   }

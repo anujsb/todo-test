@@ -6,6 +6,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth,
 import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from 'lucide-react';
 import { taskSchema } from '@/lib/validations';
 import { z } from 'zod';
+import { Checkbox } from "@/components/ui/checkbox"; // Import shadcn checkbox
 
 type Task = z.infer<typeof taskSchema>;
 
@@ -18,6 +19,7 @@ interface CalendarViewProps {
 export default function FlowSavvyCalendarView({ tasks, onAddTask, onViewTask }: CalendarViewProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [tasksState, setTasks] = useState(tasks);
 
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -44,11 +46,32 @@ export default function FlowSavvyCalendarView({ tasks, onAddTask, onViewTask }: 
     }
   };
 
+  const handleToggleComplete = async (task: Task) => {
+    try {
+      const updatedTask = { ...task, status: task.status === "completed" ? "pending" : "completed" as "pending" | "in_progress" | "completed" };
+
+      // Update the server
+      await fetch(`/api/tasks/${task.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedTask),
+      });
+
+      // Update the local state
+      const updatedTasks = tasksState.map((t) =>
+        t.id === task.id ? { ...t, status: updatedTask.status } : t
+      );
+      setTasks(updatedTasks); // Update the state to reflect the change
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
+  };
+
   // Group tasks by date
   const tasksByDate = useMemo(() => {
     const grouped: Record<string, Task[]> = {};
     
-    tasks.forEach(task => {
+    tasksState.forEach(task => {
       if (task.dueDate) {
         const dateKey = format(typeof task.dueDate === 'string' ? parseISO(task.dueDate) : task.dueDate, 'yyyy-MM-dd');
         if (!grouped[dateKey]) {
@@ -59,7 +82,7 @@ export default function FlowSavvyCalendarView({ tasks, onAddTask, onViewTask }: 
     });
     
     return grouped;
-  }, [tasks]);
+  }, [tasksState]);
 
   // Get the status counts for a specific date
   const getStatusCounts = (dateKey: string) => {
@@ -149,25 +172,33 @@ export default function FlowSavvyCalendarView({ tasks, onAddTask, onViewTask }: 
                 
                 {/* Tasks for this day */}
                 <div className="mt-3 space-y-1.5">
-                  {dayTasks.slice(0, 3).map((task) => (
+                  {dayTasks.map((task) => (
                     <div
                       key={task.id}
                       className={`px-2 py-1.5 rounded-md text-xs truncate cursor-pointer hover:opacity-80 transition-opacity flex items-center ${
-                        task.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                        task.status === 'in_progress' ? 'bg-amber-100 text-amber-800' : 
-                        'bg-blue-100 text-blue-800'
+                        task.status === "completed" ? "bg-green-100 text-green-800 line-through" : "bg-blue-100 text-blue-800"
                       }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (onViewTask) onViewTask(task);
-                      }}
                     >
-                      <div className={`w-2 h-2 rounded-full mr-1.5 ${
-                        task.status === 'completed' ? 'bg-green-500' : 
-                        task.status === 'in_progress' ? 'bg-amber-500' : 
-                        'bg-blue-500'
-                      }`}></div>
-                      {task.title}
+                      {/* Checkbox for marking task as complete */}
+                      <Checkbox
+                        checked={task.status === "completed"}
+                        onCheckedChange={(checked) => {
+                          handleToggleComplete(task);
+                          event?.stopPropagation(); // Prevent parent click handlers
+                        }}
+                        className="mr-2"
+                      />
+
+                      {/* Task title, clicking this opens the edit task popup */}
+                      <span
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (onViewTask) onViewTask(task);
+                        }}
+                      >
+                        {task.title}
+                      </span>
                     </div>
                   ))}
                   {dayTasks.length > 3 && (
