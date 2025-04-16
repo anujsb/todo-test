@@ -5,9 +5,9 @@ import { z } from 'zod';
 
 const insertTaskSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  dueDate: z.string().transform((val) => (val ? new Date(val) : undefined)).optional(), // Transform string to Date
-  duration: z.number().optional(),
+  description: z.string().nullable(),
+  dueDate: z.string().transform((val) => (val ? new Date(val) : undefined)).optional(),
+  duration: z.number().nullable(), // Change to nullable instead of optional
   status: z.enum(['pending', 'in_progress', 'completed']).optional(),
 });
 
