@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       - Availability: Consider the availability of time slots based on the due dates and durations of existing tasks.
       - Context: Ensure the task does not overlap with existing tasks and fits logically into the schedule.
       - Duration: Estimate the duration of the task based on its complexity. If not specified, default to 60 minutes, but adjust based on the task's nature and priority.
-      - Due Date: If the user specifies a relative date like "tomorrow" or "next week", calculate the exact date based on today's date (${new Date().toISOString().split('T')[0]}). If no date is specified, suggest the nearest available date based on the database context or default to tomorrow.
+      - Due Date: If the user specifies a relative date like "tomorrow" or "next week", calculate the exact date based on today's date (${new Date().toISOString().split('T')[0]}). If the user mentions "weekend", schedule the task for the upcoming Saturday. If today is already Saturday or Sunday, schedule for the next weekend. If no date is specified, suggest the nearest available date based on the database context or default to tomorrow.
       - Location: If the task requires a specific location or resource, ensure it is assigned accordingly.
 
       Extract the following task attributes:

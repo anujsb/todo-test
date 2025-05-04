@@ -27,6 +27,7 @@ import TaskTextInput from "@/components/TaskTextInput";
 import TaskList from "@/components/TaskList";
 import TaskCalendar from "@/components/TaskCalendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TestView from "@/components/TestView";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("calendar");
@@ -46,16 +47,17 @@ export default function Home() {
       </div>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="list">List View</TabsTrigger>
+          {/* <TabsTrigger value="list">List View</TabsTrigger> */}
           <TabsTrigger value="calendar">Calendar View</TabsTrigger>
         </TabsList>
-        <TabsContent value="list">
+        {/* <TabsContent value="list">
           <TaskList />
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="calendar">
           <TaskCalendar />
         </TabsContent>
       </Tabs>
+      {/* <TestView/> */}
     </main>
   );
 }
