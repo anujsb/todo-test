@@ -48,7 +48,7 @@ export default function Home() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           {/* <TabsTrigger value="list">List View</TabsTrigger> */}
-          <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
         </TabsList>
         {/* <TabsContent value="list">
           <TaskList />
